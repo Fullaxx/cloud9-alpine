@@ -15,7 +15,7 @@ nodejs nodejs-npm tmux && rm -f /var/cache/apk/*
 RUN git clone https://github.com/c9/core.git /c9 && cd /c9 && \
 curl -s https://raw.githubusercontent.com/c9/install/master/link.sh \
 -o scripts/link.sh && chmod +x scripts/link.sh && ./scripts/link.sh && \
-./scripts/install-sdk.sh && mkdir /c9ws
+./scripts/install-sdk.sh && mkdir /c9ws /var/log/supervisor
 
 # ------------------------------------------------------------------------------
 # Add supervisord conf
