@@ -7,25 +7,26 @@ MAINTAINER Brett Kuskie <fullaxx@gmail.com>
 
 # ------------------------------------------------------------------------------
 # Install base and clean up
-RUN apk --update add \
-build-base bash g++ make git curl python2 supervisor nodejs nodejs-npm tmux && \
-rm -f /var/cache/apk/*
+RUN apk --update add build-base bash \
+	  curl g++ git make nodejs nodejs-npm python2 tmux && \
+	rm -f /var/cache/apk/*
 
 # ------------------------------------------------------------------------------
 # Install Cloud9 and clean up
 RUN git clone https://github.com/c9/core.git /c9 && cd /c9 && \
-curl -s https://raw.githubusercontent.com/c9/install/master/link.sh \
--o scripts/link.sh && chmod +x scripts/link.sh && ./scripts/link.sh && \
-./scripts/install-sdk.sh && \
-rm -rf /c9/.git /root/.c9/tmp /root/.npm /root/.node-gyp && \
-mkdir /c9ws /var/log/supervisor
+	curl -s https://raw.githubusercontent.com/c9/install/master/link.sh \
+	  -o scripts/link.sh && chmod +x scripts/link.sh && \
+	./scripts/link.sh && \
+	./scripts/install-sdk.sh && \
+	rm -rf /c9/.git /root/.c9/tmp /root/.npm /root/.node-gyp
 
 # ------------------------------------------------------------------------------
-# Add supervisord conf
-ADD supervisord.conf /etc/
+# Add app.sh
+COPY app.sh /app/
 
 # ------------------------------------------------------------------------------
 # Add volumes
+VOLUME /log
 VOLUME /c9ws
 
 # ------------------------------------------------------------------------------
@@ -33,5 +34,5 @@ VOLUME /c9ws
 EXPOSE 80
 
 # ------------------------------------------------------------------------------
-# Start supervisor, define default command.
-ENTRYPOINT ["supervisord", "-c", "/etc/supervisord.conf"]
+# Define default command
+CMD ["/app/app.sh"]
